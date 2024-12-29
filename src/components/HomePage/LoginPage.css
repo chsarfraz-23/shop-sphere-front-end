@@ -1,0 +1,57 @@
+/* Charming and Professional Background */
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
+  font-family: "Roboto", sans-serif;
+}
+
+/* Center the Login Container */
+.login-container {
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9); /* Slight transparency */
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Login Title */
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #4a4a4a;
+}
+
+/* Form Styling */
+.login-form {
+  padding: 20px;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+/* Button Styling */
+button.MuiButton-containedPrimary {
+  background-color: #6a82fb; /* Gradient start */
+  background-image: linear-gradient(315deg, #6a82fb 0%, #fc5c7d 74%);
+  color: #ffffff;
+  font-weight: bold;
+}
+
+button.MuiButton-containedPrimary:hover {
+  background-image: linear-gradient(315deg, #fc5c7d 0%, #6a82fb 74%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    padding: 15px;
+  }
+  .title {
+    font-size: 1.8rem;
+  }
+}
