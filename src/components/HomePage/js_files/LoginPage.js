@@ -10,17 +10,17 @@ import {
   Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import "./LoginPage.css"; // Import the CSS file
+import "../ccs_files/LoginPage.css"; // Import the CSS file
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("Enter username");
-  const [password, setPassword] = useState("Enter Password");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("https://your-backend-api.com/api/token/", {
+      const response = await fetch("http://localhost:8001/api/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +33,7 @@ const LoginPage = () => {
       }
 
       const data = await response.json();
-      localStorage.setItem("token", data.access);
+      localStorage.setItem("access_token", data.access);
       setSuccess(true);
     } catch (err) {
       setError(err.message);
