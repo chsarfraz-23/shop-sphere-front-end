@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import {
   Box,
   Button,
@@ -21,7 +21,6 @@ const SignUpPage = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
-
   const handleRedirectToLogin = () => {
     navigate("/login");
   };
@@ -79,6 +78,8 @@ const SignUpPage = () => {
                 variant="outlined"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                InputProps={{autoComplete: 'new-username'}}
+                InputLabelProps={{shrink: Boolean(username)}}
               />
             </Grid>
             <Grid item xs={12}>
@@ -89,9 +90,8 @@ const SignUpPage = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                InputProps={{autoComplete: 'new-email'}}
+                InputLabelProps={{shrink: Boolean(email)}}
               />
             </Grid>
             <Grid item xs={12}>
@@ -102,6 +102,8 @@ const SignUpPage = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                InputProps={{autoComplete: 'new-password'}}
+                InputLabelProps={{shrink: Boolean(password)}}
               />
             </Grid>
             <Grid item xs={12}>

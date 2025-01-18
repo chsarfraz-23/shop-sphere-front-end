@@ -10,14 +10,15 @@ import {
   Snackbar,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import "../ccs_files/LoginPage.css"; // Import the CSS file
+import "../ccs_files/LoginPage.css";
+import {useNavigate} from "react-router-dom"; // Import the CSS file
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
+  const navigate = useNavigate();
   const handleLogin = async () => {
     try {
       const response = await fetch("http://localhost:8001/api/token/", {
@@ -35,6 +36,10 @@ const LoginPage = () => {
       const data = await response.json();
       localStorage.setItem("access_token", data.access);
       setSuccess(true);
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
     } catch (err) {
       setError(err.message);
     }
@@ -46,7 +51,6 @@ const LoginPage = () => {
         <Typography variant="h4" component="h1" gutterBottom className="title">
           Chachu Super Store !!!
         </Typography>
-
         <Paper elevation={3} className="login-form">
           <Grid container spacing={3}>
             <Grid item xs={12}>
@@ -55,7 +59,9 @@ const LoginPage = () => {
                 label="Username"
                 variant="outlined"
                 value={username}
+                InputProps={{autoComplete: 'new-username'}}
                 onChange={(e) => setUsername(e.target.value)}
+                InputLabelProps={{shrink: Boolean(username)}}
               />
             </Grid>
             <Grid item xs={12}>
@@ -65,7 +71,9 @@ const LoginPage = () => {
                 variant="outlined"
                 type="password"
                 value={password}
+                InputProps={{autoComplete: 'new-password'}}
                 onChange={(e) => setPassword(e.target.value)}
+                InputLabelProps={{shrink: Boolean(password)}}
               />
             </Grid>
             <Grid item xs={12}>
