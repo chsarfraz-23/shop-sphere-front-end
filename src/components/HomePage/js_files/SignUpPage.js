@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, {useState} from "react";
 import {
   Box,
   Button,
@@ -27,7 +27,7 @@ const SignUpPage = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await fetch("http://localhost:8001/signup/", {
+      const response = await fetch("http://localhost:8000/api/signup/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -38,6 +38,7 @@ const SignUpPage = () => {
       const data = await response.json();
 
       if (!response.ok) {
+        console.log(data)
         throw new Error(data.detail || "Failed to sign up");
       }
 

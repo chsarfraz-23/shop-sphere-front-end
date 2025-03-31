@@ -21,7 +21,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8001/api/token/", {
+      const response = await fetch("http://localhost:8000/api/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
