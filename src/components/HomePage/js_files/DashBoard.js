@@ -10,7 +10,7 @@ const Dashboard = () => {
         {/* Site Title */}
         <Box textAlign="center" sx={{ padding: '20px' }}>
           <Typography variant="h2" sx={{ fontWeight: 'bold', color: '#333' }}>
-            my-site
+            Chachu Super Store
           </Typography>
         </Box>
 
