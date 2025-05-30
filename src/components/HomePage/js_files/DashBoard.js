@@ -31,6 +31,13 @@ const Dashboard = () => {
             </Link>
           </Grid>
           <Grid item xs={12} sm={4}>
+            <Link to="/sale" style={{ textDecoration: 'none' }}>
+              <Button variant="contained" fullWidth sx={{ padding: '15px', backgroundColor: '#2196f3' }}>
+                Sale Product
+              </Button>
+            </Link>
+          </Grid>
+          <Grid item xs={12} sm={4}>
             <Link to="/select-product" style={{ textDecoration: 'none' }}>
               <Button variant="contained" fullWidth sx={{ padding: '15px', backgroundColor: '#ff9800' }}>
                 Select Your Product

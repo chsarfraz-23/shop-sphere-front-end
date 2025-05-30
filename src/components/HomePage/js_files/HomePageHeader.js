@@ -20,7 +20,7 @@ const Header = () => {
             letterSpacing: 2,
           }}
         >
-          Chachu Super Store !!!
+          ShopSphere
         </Typography>
       </Toolbar>
     </AppBar>

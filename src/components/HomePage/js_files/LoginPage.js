@@ -49,7 +49,7 @@ const LoginPage = () => {
     <Box className="home-page">
       <Container maxWidth="sm" className="login-container">
         <Typography variant="h4" component="h1" gutterBottom className="title">
-          Chachu Super Store !!!
+          ShopSphere
         </Typography>
         <Paper elevation={3} className="login-form">
           <Grid container spacing={3}>
