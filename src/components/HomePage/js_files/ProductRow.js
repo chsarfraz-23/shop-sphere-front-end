@@ -15,7 +15,7 @@ const fetchProducts = async (setProducts, setMeta, setError, setIsLoading) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,  // Add the Bearer token here
+        'Authorization': `Bearer ${token}`,
       },
     });
 
