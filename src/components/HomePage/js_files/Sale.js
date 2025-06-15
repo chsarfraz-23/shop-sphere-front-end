@@ -90,7 +90,11 @@ const SalePage = () => {
     const { images, ...productData } = formData;
 
     try {
-      const productResponse = await axios.post("http://localhost:8000/api/products/", productData);
+      const token = localStorage.getItem('access_token');
+      const productResponse = await axios.post(
+          "http://localhost:8000/api/products/",
+          productData, {headers: {Authorization: `Bearer ${token}`}}
+      );
       const productId = productResponse.data.id;
 
       if (images.length > 0) {
@@ -101,7 +105,7 @@ const SalePage = () => {
         imageData.append("product", productId);
 
         await axios.post("http://localhost:8000/api/product-images/", imageData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data", "Authorization": `Bearer ${token}`},
         });
       }
 
