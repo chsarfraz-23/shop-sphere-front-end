@@ -87,27 +87,48 @@ const SalePage = () => {
     e.preventDefault();
     setSubmitLoading(true);
 
-    const { images, ...productData } = formData;
-
     try {
       const token = localStorage.getItem('access_token');
-      const productResponse = await axios.post(
-          "http://localhost:8000/api/products/",
-          productData, {headers: {Authorization: `Bearer ${token}`}}
-      );
-      const productId = productResponse.data.id;
+      const uploadedImageIds = [];
 
-      if (images.length > 0) {
-        const imageData = new FormData();
-        images.forEach((file) => {
-          imageData.append("images", file);
-        });
-        imageData.append("product", productId);
+      // Step 1: Upload images to /api/product-images/
+      for (const file of formData.images) {
+        const imageForm = new FormData();
+        imageForm.append("image", file);
 
-        await axios.post("http://localhost:8000/api/product-images/", imageData, {
-          headers: { "Content-Type": "multipart/form-data", "Authorization": `Bearer ${token}`},
-        });
+        const imageResponse = await axios.post(
+          "http://localhost:8000/api/product-images/",
+          imageForm,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (Array.isArray(imageResponse.data)) {
+          imageResponse.data.forEach(img => uploadedImageIds.push(img.id));
+        } else {
+          uploadedImageIds.push(imageResponse.data.id);
+        }
       }
+
+      // Step 2: Submit product with image IDs
+      const productData = {
+        ...formData,
+        images: uploadedImageIds,
+      };
+
+      await axios.post(
+        "http://localhost:8000/api/products/",
+        productData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       alert("Product submitted successfully!");
       setFormData({
@@ -150,7 +171,7 @@ const SalePage = () => {
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              {[
+              {[ // Form fields
                 { label: "Product Name", name: "name", type: "text", required: true },
                 { label: "Price", name: "price", type: "number", required: true },
                 { label: "Discount", name: "discount", type: "number" },
@@ -170,16 +191,11 @@ const SalePage = () => {
                     onChange={handleChange}
                     required={required}
                     variant="outlined"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        backgroundColor: 'white',
-                      },
-                    }}
+                    sx={{ '& .MuiOutlinedInput-root': { backgroundColor: 'white' } }}
                   />
                 </Grid>
               ))}
 
-              {/* Updated Product Type Dropdown */}
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel
@@ -192,9 +208,6 @@ const SalePage = () => {
                       color: 'text.primary',
                       fontWeight: '500',
                       mb: 1,
-                      '&.Mui-focused': {
-                        color: 'primary.main',
-                      }
                     }}
                   >
                     Product Type *
