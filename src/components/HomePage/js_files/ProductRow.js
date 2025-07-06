@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Paper, Typography, Box, CircularProgress, Alert, Button } from '@mui/material';
+import {
+  Grid,
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
+  Alert,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 
-// Function to fetch products (now outside the component)
-const fetchProducts = async (setProducts, setMeta, setError, setIsLoading) => {
-  const token = localStorage.getItem('access_token'); // Retrieve the token from localStorage
+const fetchProducts = async (page, pageSize, setProducts, setMeta, setError, setIsLoading) => {
+  const token = localStorage.getItem('access_token');
   if (!token) {
     setError("Authentication required.");
     setIsLoading(false);
@@ -11,7 +22,7 @@ const fetchProducts = async (setProducts, setMeta, setError, setIsLoading) => {
   }
 
   try {
-    const response = await fetch('http://127.0.0.1:8000/api/products/', {
+    const response = await fetch(`http://127.0.0.1:8000/api/products/?page=${page}&page_size=${pageSize}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -20,9 +31,7 @@ const fetchProducts = async (setProducts, setMeta, setError, setIsLoading) => {
     });
 
     if (!response.ok) {
-      // If response is not OK (e.g., 401), handle token expiration
       if (response.status === 401) {
-        // Token expired, handle token refresh (this can be implemented)
         throw new Error("Session expired, please log in again.");
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -30,8 +39,8 @@ const fetchProducts = async (setProducts, setMeta, setError, setIsLoading) => {
     }
 
     const data = await response.json();
-    setProducts(data.results); // Set the products
-    setMeta(data.meta);  // Set pagination metadata
+    setProducts(data.results);
+    setMeta(data.meta);
   } catch (err) {
     setError(err.message);
   } finally {
@@ -41,15 +50,28 @@ const fetchProducts = async (setProducts, setMeta, setError, setIsLoading) => {
 
 const ProductRow = () => {
   const [products, setProducts] = useState([]);
-  const [meta, setMeta] = useState(null);  // For meta data like pagination info
+  const [meta, setMeta] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8); // Default page size
 
   useEffect(() => {
-    fetchProducts(setProducts, setMeta, setError, setIsLoading);
-  }, []);  // Empty dependency array ensures the API is called once on component mount
+    setIsLoading(true);
+    fetchProducts(page, pageSize, setProducts, setMeta, setError, setIsLoading);
+  }, [page, pageSize]);
 
-  // If there's an error fetching products
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= meta.page_total) {
+      setPage(newPage);
+    }
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(e.target.value);
+    setPage(1); // Reset to first page on size change
+  };
+
   if (error) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -58,7 +80,6 @@ const ProductRow = () => {
     );
   }
 
-  // If the data is still loading
   if (isLoading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -69,48 +90,29 @@ const ProductRow = () => {
 
   return (
     <Box sx={{ mt: 4 }}>
-      {/* Display Pagination Info */}
-      {meta && meta.links && (
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-          <Typography variant="body2" color="text.secondary">
-            Page {meta.page} of {meta.page_total} (Showing {meta.page_size} items per page, Total results: {meta.results_total})
-          </Typography>
-          <Box>
-            {/* Add Previous and Next Page Links with checks */}
-            {meta.links.previous && (
-              <Button variant="outlined" sx={{ mr: 1 }}>Previous</Button>
-            )}
-            {meta.links.next && (
-              <Button variant="outlined">Next</Button>
-            )}
-          </Box>
-        </Box>
-      )}
-
-      {/* Render Products */}
+      {/* Product Grid */}
       <Grid container spacing={3} justifyContent="center">
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={3} key={product.id}>
             <Paper elevation={3} sx={{ padding: '20px', textAlign: 'center' }}>
-              {/* Handle Images */}
               <img
                 src={product.images && product.images[0] ? product.images[0].image : '/default-image.jpg'}
                 alt={product.name}
                 style={{
                   width: '100%',
-                  height: '200px',  // Adjust height for better presentation
+                  height: '200px',
                   objectFit: 'cover',
-                  borderRadius: '4px'
+                  borderRadius: '4px',
                 }}
               />
               <Box sx={{ mt: 2 }}>
-                <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                   {product.name}
                 </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ fontSize: '16px', fontWeight: 'bold' }}>
+                <Typography variant="body1" color="text.secondary" sx={{ fontWeight: 'bold' }}>
                   Price: ${product.price}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+                <Typography variant="body2" color="text.secondary">
                   Discount: {product.discount}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
@@ -127,6 +129,42 @@ const ProductRow = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Pagination Controls — Centered at Bottom */}
+      {meta && (
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 5, gap: 2 }}>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <FormControl size="small" sx={{ minWidth: 100 }}>
+              <InputLabel id="page-size-label">Page Size</InputLabel>
+              <Select
+                labelId="page-size-label"
+                value={pageSize}
+                label="Page Size"
+                onChange={handlePageSizeChange}
+              >
+                {[4, 8, 12, 16, 20].map(size => (
+                  <MenuItem key={size} value={size}>{size}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <Button
+              variant="outlined"
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1}
+            >
+              Previous
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= meta.page_total}
+            >
+              Next
+            </Button>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };
