@@ -116,9 +116,10 @@ const SalePage = () => {
 
       // Step 2: Submit product with image IDs
       const productData = {
-        ...formData,
-        images: uploadedImageIds,
-      };
+            ...formData,
+            images: uploadedImageIds,
+            phone_number: `+92${formData.phone_number}`,
+            };
 
       await axios.post(
         "http://localhost:8000/api/products/",
@@ -179,7 +180,6 @@ const SalePage = () => {
                 { label: "State", name: "state", type: "text", required: true },
                 { label: "Country", name: "country", type: "text", required: true },
                 { label: "Email", name: "email", type: "email", required: true },
-                { label: "Phone Number", name: "phone_number", type: "tel", required: true },
               ].map(({ label, name, type, required }) => (
                 <Grid item xs={12} sm={6} key={name}>
                   <TextField
@@ -195,56 +195,84 @@ const SalePage = () => {
                   />
                 </Grid>
               ))}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                    fullWidth
+                    label="Phone Number *"
+                    name="phone_number"
+                    type="tel"
+                    required
+                    variant="outlined"
+                    value={formData.phone_number}
+                    onChange={(e) => {
+                      const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 10);
+                      setFormData({ ...formData, phone_number: onlyDigits });
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                          <Typography sx={{ px: 1, fontWeight: 'bold' }}>
+                            +92
+                          </Typography>
+                      ),
+                    }}
+                    placeholder="3001234567"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'white',
+                      },
+                    }}
+                />
+              </Grid>
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth>
                   <InputLabel
-                    id="type-select-label"
-                    shrink={true}
-                    sx={{
-                      position: 'relative',
-                      transform: 'none',
-                      fontSize: '1rem',
-                      color: 'text.primary',
-                      fontWeight: '500',
-                      mb: 1,
-                    }}
+                      id="type-select-label"
+                      shrink={true}
+                      sx={{
+                        position: 'relative',
+                        transform: 'none',
+                        fontSize: '1rem',
+                        color: 'text.primary',
+                        fontWeight: '500',
+                        mb: 1,
+                      }}
                   >
                     Product Type *
                   </InputLabel>
                   <Select
-                    labelId="type-select-label"
-                    id="type-select"
-                    name="type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    required
-                    fullWidth
-                    displayEmpty
-                    sx={{
-                      backgroundColor: 'white',
-                      '& .MuiSelect-select': {
-                        padding: '12px 14px',
-                      },
-                    }}
+                      labelId="type-select-label"
+                      id="type-select"
+                      name="type"
+                      value={formData.type}
+                      onChange={handleChange}
+                      required
+                      fullWidth
+                      displayEmpty
+                      sx={{
+                        backgroundColor: 'white',
+                        '& .MuiSelect-select': {
+                          padding: '12px 14px',
+                        },
+                      }}
                   >
                     {loading ? (
-                      <MenuItem disabled>
-                        <CircularProgress size={24} />
-                        <Typography variant="body2" sx={{ ml: 2 }}>Loading product types...</Typography>
-                      </MenuItem>
-                    ) : (
-                      productTypes.length > 0 ? (
-                        productTypes.map((type) => (
-                          <MenuItem key={type.id} value={type.id}>
-                            {type.name}
-                          </MenuItem>
-                        ))
-                      ) : (
-                        <MenuItem value="" disabled>
-                          No product types available
+                        <MenuItem disabled>
+                          <CircularProgress size={24} />
+                          <Typography variant="body2" sx={{ ml: 2 }}>Loading product types...</Typography>
                         </MenuItem>
-                      )
+                    ) : (
+                        productTypes.length > 0 ? (
+                            productTypes.map((type) => (
+                                <MenuItem key={type.id} value={type.id}>
+                                  {type.name}
+                                </MenuItem>
+                            ))
+                        ) : (
+                            <MenuItem value="" disabled>
+                              No product types available
+                            </MenuItem>
+                        )
                     )}
                   </Select>
                 </FormControl>
@@ -252,92 +280,92 @@ const SalePage = () => {
 
               <Grid item xs={12}>
                 <TextField
-                  label="Address *"
-                  name="address"
-                  multiline
-                  rows={3}
-                  fullWidth
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                  variant="outlined"
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      backgroundColor: 'white',
-                    },
-                  }}
+                    label="Address *"
+                    name="address"
+                    multiline
+                    rows={3}
+                    fullWidth
+                    value={formData.address}
+                    onChange={handleChange}
+                    required
+                    variant="outlined"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'white',
+                      },
+                    }}
                 />
               </Grid>
 
               <Grid item xs={12}>
                 <Button
-                  variant="contained"
-                  component="label"
-                  fullWidth
-                  startIcon={<Upload />}
-                  sx={{
-                    bgcolor: 'primary.main',
-                    py: 1.5,
-                    '&:hover': {
-                      bgcolor: 'primary.dark',
-                    }
-                  }}
+                    variant="contained"
+                    component="label"
+                    fullWidth
+                    startIcon={<Upload />}
+                    sx={{
+                      bgcolor: 'primary.main',
+                      py: 1.5,
+                      '&:hover': {
+                        bgcolor: 'primary.dark',
+                      }
+                    }}
                 >
                   Upload Images
                   <input
-                    type="file"
-                    hidden
-                    multiple
-                    accept="image/*"
-                    onChange={handleFileChange}
+                      type="file"
+                      hidden
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileChange}
                   />
                 </Button>
                 {formData.images.length > 0 && (
-                  <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                    {formData.images.length} image(s) selected
-                  </Typography>
+                    <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                      {formData.images.length} image(s) selected
+                    </Typography>
                 )}
               </Grid>
 
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="is_active"
-                      checked={formData.is_active}
-                      onChange={handleChange}
-                      color="primary"
-                    />
-                  }
-                  label="Mark as Active"
-                  sx={{ color: 'text.primary' }}
+                    control={
+                      <Checkbox
+                          name="is_active"
+                          checked={formData.is_active}
+                          onChange={handleChange}
+                          color="primary"
+                      />
+                    }
+                    label="Mark as Active"
+                    sx={{ color: 'text.primary' }}
                 />
               </Grid>
 
               <Grid item xs={12}>
                 <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  size="large"
-                  disabled={submitLoading}
-                  sx={{
-                    py: 1.5,
-                    fontSize: '1rem',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      bgcolor: 'primary.dark',
-                    }
-                  }}
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    size="large"
+                    disabled={submitLoading}
+                    sx={{
+                      py: 1.5,
+                      fontSize: '1rem',
+                      fontWeight: 'bold',
+                      '&:hover': {
+                        bgcolor: 'primary.dark',
+                      }
+                    }}
                 >
                   {submitLoading ? (
-                    <>
-                      <CircularProgress size={24} color="inherit" sx={{ mr: 2 }} />
-                      Submitting...
-                    </>
+                      <>
+                        <CircularProgress size={24} color="inherit" sx={{ mr: 2 }} />
+                        Submitting...
+                      </>
                   ) : (
-                    'Submit Product'
+                      'Submit Product'
                   )}
                 </Button>
               </Grid>
