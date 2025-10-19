@@ -22,7 +22,7 @@ const fetchProducts = async (page, pageSize, setProducts, setMeta, setError, set
   }
 
   try {
-    const response = await fetch(`http://127.0.0.1:8000/api/products/?page=${page}&page_size=${pageSize}`, {
+    const response = await fetch(`${process.env.REACT_APP_SHOPSPHERE_API_URL}/products/?page=${page}&page_size=${pageSize}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
