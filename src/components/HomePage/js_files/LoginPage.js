@@ -21,7 +21,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/token/", {
+      const response = await fetch(`${process.env.REACT_APP_SHOPSPHERE_API_URL}/token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

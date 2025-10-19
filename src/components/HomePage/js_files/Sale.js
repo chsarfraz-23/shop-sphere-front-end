@@ -48,7 +48,7 @@ const SalePage = () => {
         let totalPages = 1;
 
         while (page <= totalPages) {
-          const response = await fetch(`http://localhost:8000/api/product-types/?page=${page}`, {
+          const response = await fetch(`${process.env.SHOPSPHERE_API_URL}/product-types/?page=${page}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ const SalePage = () => {
         imageForm.append("image", file);
 
         const imageResponse = await axios.post(
-          "http://localhost:8000/api/product-images/",
+          `${process.env.REACT_APP_SHOPSPHERE_API_URL}/product-images/`,
           imageForm,
           {
             headers: {
@@ -122,7 +122,7 @@ const SalePage = () => {
             };
 
       await axios.post(
-        "http://localhost:8000/api/products/",
+        `${process.env.REACT_APP_SHOPSPHERE_API_URL}/products/`,
         productData,
         {
           headers: {
