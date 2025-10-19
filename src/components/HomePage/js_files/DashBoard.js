@@ -24,7 +24,7 @@ const Dashboard = () => {
             </Link>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Link to="/cart" style={{ textDecoration: 'none' }}>
+            <Link to="/check-cart" style={{ textDecoration: 'none' }}>
               <Button variant="contained" fullWidth sx={{ padding: '15px', backgroundColor: '#2196f3' }}>
                 Check Your Cart
               </Button>
